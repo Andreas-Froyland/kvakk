@@ -1,0 +1,75 @@
+# Builds a signed release APK and attaches it to a GitHub release as kvakk.apk.
+#
+# Trigger: push a tag like v0.2.0. The version comes from the tag.
+#
+# Required repository secrets (see README, "Publishing a release"):
+#   KEYSTORE_BASE64    base64 of kvakk-release.jks
+#   KEYSTORE_PASSWORD  storePassword from keystore.properties (also the key password)
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Read version from tag
+        id: version
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]{1,2}\.[0-9]{1,2}$ ]]; then
+            echo "Tag must look like v1.2.3 (minor and patch below 100), got $GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Restore signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [[ -z "$KEYSTORE_BASE64" || -z "$KEYSTORE_PASSWORD" ]]; then
+            echo "KEYSTORE_BASE64 and KEYSTORE_PASSWORD secrets are required" >&2
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 --decode > kvakk-release.jks
+          cat > keystore.properties <<PROPS
+          storeFile=kvakk-release.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=kvakk
+          keyPassword=$KEYSTORE_PASSWORD
+          PROPS
+
+      - name: Build
+        run: ./gradlew assembleRelease -PkvakkVersion=${{ steps.version.outputs.version }}
+
+      # Only exists when the build was signed; an unsigned build is named app-release-unsigned.apk.
+      - name: Rename APK
+        run: cp app/build/outputs/apk/release/app-release.apk kvakk.apk
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release create "$GITHUB_REF_NAME" --title "Kvakk ${{ steps.version.outputs.version }}" --generate-notes
+          fi
+          gh release upload "$GITHUB_REF_NAME" kvakk.apk --clobber
+
+      - name: Remove signing key
+        if: always()
+        run: rm -f kvakk-release.jks keystore.properties

@@ -46,6 +46,22 @@ scripts/create-keystore.sh   # writes kvakk-release.jks + keystore.properties (g
 Back up the keystore and `keystore.properties`. Updates have to be signed with the same
 key, and a device-owner app can't be reinstalled with a new key without a factory reset.
 
+## Publishing a release
+
+`.github/workflows/release.yml` builds a signed APK and attaches it to a GitHub release as
+`kvakk.apk` whenever you push a version tag:
+
+```sh
+git tag v0.2.0 && git push origin v0.2.0
+```
+
+It needs two repository secrets, made from your local signing key:
+
+```sh
+base64 -w0 kvakk-release.jks | gh secret set KEYSTORE_BASE64
+grep storePassword keystore.properties | cut -d= -f2- | gh secret set KEYSTORE_PASSWORD
+```
+
 ## Set up a phone
 
 There are two ways to make Kvakk device owner. Both need a factory-reset phone.

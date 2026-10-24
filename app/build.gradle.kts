@@ -11,6 +11,13 @@ val keystoreProperties = Properties().apply {
     if (file.exists()) file.inputStream().use { load(it) }
 }
 
+// CI passes -PkvakkVersion=1.2.3 from the release tag. versionCode must grow with every
+// release, or Android refuses to install the update.
+val kvakkVersion = (findProperty("kvakkVersion") as String?) ?: "0.1.0"
+val kvakkVersionCode = kvakkVersion.split(".").map(String::toInt).let { (major, minor, patch) ->
+    major * 10_000 + minor * 100 + patch
+}
+
 android {
     namespace = "app.kvakk"
     compileSdk = 37
@@ -20,8 +27,8 @@ android {
         // Lock task features (hiding notifications, keeping the power menu) need API 28.
         minSdk = 28
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = kvakkVersionCode
+        versionName = kvakkVersion
     }
 
     signingConfigs {
