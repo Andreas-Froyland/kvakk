@@ -48,6 +48,40 @@ key, and a device-owner app can't be reinstalled with a new key without a factor
 
 ## Set up a phone
 
+There are two ways to make Kvakk device owner. Both need a factory-reset phone.
+
+### Option A: QR code (no computer needed at the phone)
+
+1. Host the signed release APK somewhere the phone can download it over HTTPS, for
+   example as a GitHub release asset:
+
+   ```sh
+   cp app/build/outputs/apk/release/app-release.apk kvakk.apk
+   gh release create v0.1.0 kvakk.apk
+   ```
+
+   The repo has to be public for the phone to download it. Any HTTPS file host works.
+2. Generate the QR code (needs `pip install segno` or the `qrencode` command):
+
+   ```sh
+   scripts/provisioning-qr.py \
+     --url https://github.com/<you>/kvakk/releases/latest/download/kvakk.apk \
+     --wifi-ssid MyWifi --wifi-password secret   # optional
+   ```
+
+   This shows the code in the terminal and saves `build/kvakk-provisioning.png`. It pins
+   the signing certificate rather than the exact file, so you can upload newer APKs to
+   the same URL without making a new code. The Wi-Fi password is stored in the code in
+   plain text, so don't share the image.
+3. Factory reset the phone. On the first setup screen, **tap the same spot 6 times**.
+   A QR scanner opens. Connect to Wi-Fi if asked and scan the code. Android downloads
+   Kvakk and finishes setup with Kvakk as device owner and home screen.
+
+The now-playing bar needs notification access, which only `adb` can grant without
+asking. After QR setup, go to parent mode and tap **Give access** under Status.
+
+### Option B: USB and adb
+
 1. Factory reset the phone. During setup, **skip adding a Google account**: Android only
    allows a device owner on a phone with no accounts. (You can add one afterwards.)
 2. Enable Developer options and USB debugging, then connect the phone.
@@ -59,11 +93,15 @@ key, and a device-owner app can't be reinstalled with a new key without a factor
 
    This installs the APK, runs `dpm set-device-owner`, grants notification access for the
    now-playing bar and starts Kvakk.
-4. On the phone, hold the duck for 3 seconds, choose a PIN, then:
-   - Install and sign in to the audiobook apps (Play Store button). Do this before you go
-     back to kids mode: apps that sign in through a browser can't do that in kids mode.
-   - Turn on the apps the kids may use.
-   - Adjust the volume caps and pair the headphones.
+
+### Then, on the phone
+
+Hold the duck for 3 seconds, choose a PIN, then:
+
+- Install and sign in to the audiobook apps (Play Store button). Do this before you go
+  back to kids mode: apps that sign in through a browser can't do that in kids mode.
+- Turn on the apps the kids may use.
+- Adjust the volume caps and pair the headphones.
 
 Without device owner, Kvakk still works as a plain launcher but kids can leave it.
 Parent mode shows a warning when that's the case.
