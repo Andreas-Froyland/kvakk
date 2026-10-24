@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Kvakk</string>
+
+    <!-- Kids home -->
+    <string name="no_apps_title">No apps yet</string>
+    <string name="no_apps_body">A grown-up can add apps by holding the duck for 3 seconds.</string>
+    <string name="headphones">Headphones</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="rewind_30">Back 30 seconds</string>
+
+    <!-- Kids Bluetooth -->
+    <string name="bt_title">Headphones and speakers</string>
+    <string name="bt_off">Bluetooth is off</string>
+    <string name="bt_turn_on">Turn on Bluetooth</string>
+    <string name="bt_ask_grown_up">Ask a grown-up for help</string>
+    <string name="bt_no_paired">No headphones yet. A grown-up can add them.</string>
+    <string name="bt_connected">Connected</string>
+    <string name="bt_tap_to_connect">Tap to connect</string>
+    <string name="bt_connecting">Connecting…</string>
+    <string name="bt_connect_hint">Turn the headphones off and on again. They will connect by themselves.</string>
+    <string name="bt_use_speaker">Use the phone speaker</string>
+    <string name="back">Back</string>
+
+    <!-- PIN -->
+    <string name="pin_enter">Grown-ups only</string>
+    <string name="pin_create">Choose a parent PIN</string>
+    <string name="pin_confirm">Type the PIN again</string>
+    <string name="pin_wrong">Wrong PIN</string>
+    <string name="pin_mismatch">The PINs did not match</string>
+    <string name="pin_too_short">Use at least 4 digits</string>
+    <plurals name="pin_locked_out">
+        <item quantity="one">Too many tries. Wait %1$d second.</item>
+        <item quantity="other">Too many tries. Wait %1$d seconds.</item>
+    </plurals>
+    <string name="pin_delete">Delete</string>
+    <string name="pin_ok">OK</string>
+
+    <!-- Parent -->
+    <string name="parent_title">Parent settings</string>
+    <string name="parent_done">Back to kids mode</string>
+    <string name="parent_auto_lock">Kids mode comes back when the screen turns off or after 15 minutes.</string>
+    <string name="status_title">Status</string>
+    <string name="status_device_owner_ok">Kiosk mode is active (Kvakk is device owner).</string>
+    <string name="status_device_owner_missing">Kvakk is not device owner, so children can leave it. See the README for setup.</string>
+    <string name="status_now_playing_missing">The now-playing bar needs notification access.</string>
+    <string name="status_grant_notification">Give access</string>
+    <string name="apps_title">Allowed apps</string>
+    <string name="volume_title">Volume limits</string>
+    <string name="volume_current_output">Sound is playing on: %1$s</string>
+    <string name="route_speaker">Phone speaker</string>
+    <string name="route_wired">Wired headphones</string>
+    <string name="route_bluetooth">Bluetooth</string>
+    <string name="bt_pair_title">Pair headphones and speakers</string>
+    <string name="bt_pair_help">Put the headphones in pairing mode, then search.</string>
+    <string name="bt_search">Search</string>
+    <string name="bt_stop_search">Stop</string>
+    <string name="bt_pair">Pair</string>
+    <string name="bt_pairing">Pairing…</string>
+    <string name="bt_grant">Allow Bluetooth access</string>
+    <string name="bt_paired_devices">Paired devices</string>
+    <string name="bt_open_settings">Bluetooth settings</string>
+    <string name="pin_change">Change PIN</string>
+    <string name="open_settings">Android settings</string>
+    <string name="open_play_store">Play Store</string>
+    <string name="release_title">Remove kiosk mode</string>
+    <string name="release_body">Removes Kvakk as device owner and lifts all restrictions, so the phone works normally and Kvakk can be uninstalled.</string>
+    <string name="release_confirm">Remove</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Volume guard notification (hidden in kiosk mode) -->
+    <string name="volume_guard_channel">Volume limit</string>
+    <string name="volume_guard_running">Volume limit is on</string>
+</resources>
