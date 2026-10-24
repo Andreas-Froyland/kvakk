@@ -17,7 +17,18 @@ data class KvakkSettings(
     val allowedPackages: Set<String>,
     val volumeCaps: Map<AudioRoute, Int>,
     val hasPin: Boolean,
+    val bedtime: Bedtime,
+    val homeBubbleEnabled: Boolean,
 )
+
+/** Evening theme window, in minutes after midnight. May wrap past midnight (19:00–07:00). */
+data class Bedtime(val enabled: Boolean, val startMinute: Int, val endMinute: Int) {
+    fun isActive(minuteOfDay: Int): Boolean = enabled && if (startMinute <= endMinute) {
+        minuteOfDay in startMinute until endMinute
+    } else {
+        minuteOfDay >= startMinute || minuteOfDay < endMinute
+    }
+}
 
 class KvakkPrefs private constructor(context: Context) {
     private val prefs = context.getSharedPreferences("kvakk", Context.MODE_PRIVATE)
@@ -38,6 +49,14 @@ class KvakkPrefs private constructor(context: Context) {
         update { putInt(capKey(route), percent.coerceIn(MIN_CAP_PERCENT, 100)) }
 
     val hasPin: Boolean get() = prefs.contains(KEY_PIN_HASH)
+
+    fun setBedtime(bedtime: Bedtime) = update {
+        putBoolean(KEY_BEDTIME_ENABLED, bedtime.enabled)
+        putInt(KEY_BEDTIME_START, bedtime.startMinute.mod(MINUTES_PER_DAY))
+        putInt(KEY_BEDTIME_END, bedtime.endMinute.mod(MINUTES_PER_DAY))
+    }
+
+    fun setHomeBubbleEnabled(enabled: Boolean) = update { putBoolean(KEY_HOME_BUBBLE, enabled) }
 
     fun setPin(pin: String) {
         val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
@@ -63,6 +82,12 @@ class KvakkPrefs private constructor(context: Context) {
         allowedPackages = allowedPackages,
         volumeCaps = AudioRoute.entries.associateWith(::volumeCap),
         hasPin = hasPin,
+        bedtime = Bedtime(
+            enabled = prefs.getBoolean(KEY_BEDTIME_ENABLED, true),
+            startMinute = prefs.getInt(KEY_BEDTIME_START, 19 * 60),
+            endMinute = prefs.getInt(KEY_BEDTIME_END, 7 * 60),
+        ),
+        homeBubbleEnabled = prefs.getBoolean(KEY_HOME_BUBBLE, true),
     )
 
     private fun capKey(route: AudioRoute) = "volume_cap_${route.name.lowercase()}"
@@ -80,6 +105,11 @@ class KvakkPrefs private constructor(context: Context) {
         private const val KEY_ALLOWED = "allowed_packages"
         private const val KEY_PIN_SALT = "pin_salt"
         private const val KEY_PIN_HASH = "pin_hash"
+        private const val KEY_BEDTIME_ENABLED = "bedtime_enabled"
+        private const val KEY_BEDTIME_START = "bedtime_start"
+        private const val KEY_BEDTIME_END = "bedtime_end"
+        private const val KEY_HOME_BUBBLE = "home_bubble"
+        private const val MINUTES_PER_DAY = 24 * 60
 
         @Volatile private var instance: KvakkPrefs? = null
 

@@ -3,24 +3,39 @@
     <string name="app_name" translatable="false">Kvakk</string>
 
     <!-- Kids home -->
+    <string name="greeting_night">Good night!</string>
     <string name="no_apps_title">No apps yet</string>
     <string name="no_apps_body">A grown-up can add apps by holding the duck for 3 seconds.</string>
-    <string name="headphones">Headphones</string>
+    <string name="nothing_playing">Pick something to listen to</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="rewind_30">Back 30 seconds</string>
+    <string name="forward_30">Forward 30 seconds</string>
+    <string name="sleep">Sleep</string>
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="sleep_minutes">%1$d min</string>
+    <string name="sleep_off">Turn off</string>
+    <string name="volume">Volume</string>
+    <string name="volume_up">Louder</string>
+    <string name="volume_down">Quieter</string>
+    <string name="home_bubble">Back to Kvakk</string>
 
-    <!-- Kids Bluetooth -->
-    <string name="bt_title">Headphones and speakers</string>
+    <!-- Sound output -->
+    <string name="output_title">Where should the sound go?</string>
+    <string name="route_speaker">Phone speaker</string>
+    <string name="route_wired">Wired headphones</string>
+    <string name="route_bluetooth">Bluetooth</string>
+    <string name="playing_here">Playing here</string>
+    <string name="tap_to_use">Tap to use</string>
     <string name="bt_off">Bluetooth is off</string>
     <string name="bt_turn_on">Turn on Bluetooth</string>
-    <string name="bt_ask_grown_up">Ask a grown-up for help</string>
+    <string name="bt_ask_grown_up">Ask a grown-up for help with Bluetooth.</string>
     <string name="bt_no_paired">No headphones yet. A grown-up can add them.</string>
     <string name="bt_connected">Connected</string>
     <string name="bt_tap_to_connect">Tap to connect</string>
     <string name="bt_connecting">Connecting…</string>
     <string name="bt_connect_hint">Turn the headphones off and on again. They will connect by themselves.</string>
-    <string name="bt_use_speaker">Use the phone speaker</string>
+    <string name="bt_disconnect_hint">Turn the headphones off to use the phone speaker.</string>
     <string name="back">Back</string>
 
     <!-- PIN -->
@@ -41,18 +56,25 @@
     <string name="parent_title">Parent settings</string>
     <string name="parent_done">Back to kids mode</string>
     <string name="parent_auto_lock">Kids mode comes back when the screen turns off or after 15 minutes.</string>
-    <string name="status_title">Status</string>
+    <string name="section_apps">Apps</string>
+    <string name="section_volume">Volume limits</string>
+    <string name="section_bedtime">Bedtime</string>
+    <string name="section_bluetooth">Bluetooth</string>
+    <string name="section_kiosk">Kiosk and PIN</string>
     <string name="status_device_owner_ok">Kiosk mode is active (Kvakk is device owner).</string>
     <string name="status_device_owner_missing">Kvakk is not device owner, so children can leave it. See the README for setup.</string>
-    <string name="status_now_playing_missing">The now-playing bar needs notification access.</string>
-    <string name="status_grant_notification">Give access</string>
-    <string name="apps_title">Allowed apps</string>
-    <string name="volume_title">Volume limits</string>
+    <string name="status_now_playing_missing">The now-playing controls and sleep timer need notification access.</string>
+    <string name="status_overlay_missing">The floating home button needs permission to show over other apps.</string>
+    <string name="give_access">Give access</string>
     <string name="volume_current_output">Sound is playing on: %1$s</string>
-    <string name="route_speaker">Phone speaker</string>
-    <string name="route_wired">Wired headphones</string>
-    <string name="route_bluetooth">Bluetooth</string>
-    <string name="bt_pair_title">Pair headphones and speakers</string>
+    <string name="bedtime_theme">Bedtime theme</string>
+    <string name="bedtime_body">Darker, calmer colours in the evening. The moon button on the home screen starts a sleep timer.</string>
+    <string name="bedtime_starts">Starts</string>
+    <string name="bedtime_ends">Ends</string>
+    <string name="earlier">Earlier</string>
+    <string name="later">Later</string>
+    <string name="home_bubble_setting">Floating home button</string>
+    <string name="home_bubble_body">A duck button over other apps that takes the child back to Kvakk.</string>
     <string name="bt_pair_help">Put the headphones in pairing mode, then search.</string>
     <string name="bt_search">Search</string>
     <string name="bt_stop_search">Stop</string>

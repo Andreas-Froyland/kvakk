@@ -8,24 +8,33 @@ volume limits and simple Bluetooth headphone switching.
 
 ## What it does
 
-- **Kiosk launcher.** Big icons for the allowed apps only. Kvakk becomes *device owner*
-  and uses Android's lock task mode, so the status bar, notifications, recents, Settings
-  and every other app are unreachable. Home always returns to Kvakk.
+- **Kiosk launcher.** Big, toy-like tiles for the allowed apps only, coloured from each
+  app's icon. Kvakk becomes *device owner* and uses Android's lock task mode, so the status
+  bar, notifications, recents, Settings and every other app are unreachable. Home always
+  returns to Kvakk. Works in landscape and portrait.
+- **Floating home button.** A duck button floats over the other apps; one tap goes back to
+  Kvakk, which is easier for small kids than the Home button or gesture. Can be dragged to
+  either edge, and turned off in parent mode.
+- **Now playing.** Cover art inside a progress ring, with play/pause and 30-second skip back
+  and forward for whatever app is playing.
 - **Volume limits per output.** Separate caps for the phone speaker, wired headphones and
   Bluetooth. A background service pulls the volume down whenever it goes over the cap,
-  including when headphones connect at a loud remembered level.
-- **Headphones button.** Kids see the paired headphones and speakers, tap one to connect,
-  or switch back to the phone speaker. Parents pair new devices in parent mode.
-- **Now-playing bar.** Play/pause and "back 30 seconds" for whatever is playing, without
-  opening the app.
+  including when headphones connect at a loud remembered level. The volume pill shows how
+  close the volume is to the cap and has big louder/quieter buttons.
+- **Sound output.** The output pill shows where sound is going. Kids pick paired headphones
+  or speakers, or the phone speaker, from big cards. Parents pair new devices in parent mode.
+- **Bedtime.** From 19:00 to 07:00 (adjustable) the home screen switches to a calm, dark
+  night-sky theme. The moon pill starts a sleep timer (15–60 minutes) that fades the volume
+  out and pauses playback.
 - **Parent mode.** Hold the duck in the top-left corner for 3 seconds, then enter the PIN.
-  Choose apps, set volume caps, pair Bluetooth, open Settings or the Play Store. Kids mode
-  comes back when the screen turns off or after 15 minutes. Five wrong PINs lock the
-  keypad for 30 seconds.
+  Pages for apps, volume limits, bedtime, Bluetooth, and kiosk and PIN settings. Kids mode
+  comes back when the screen turns off or after 15 minutes. Five wrong PINs lock the keypad
+  for 30 seconds.
 - **Hardening.** Blocks safe mode (which would bypass the launcher), factory reset from
   Settings, adding users and installing unknown apps. Disables the lock screen.
 
-English and Norwegian (bokmål) UI.
+English and Norwegian (bokmål) UI. The font is [Nunito](https://github.com/googlefonts/nunito)
+(SIL Open Font License, see `licenses/`).
 
 ## Build
 
@@ -93,8 +102,9 @@ There are two ways to make Kvakk device owner. Both need a factory-reset phone.
    A QR scanner opens. Connect to Wi-Fi if asked and scan the code. Android downloads
    Kvakk and finishes setup with Kvakk as device owner and home screen.
 
-The now-playing bar needs notification access, which only `adb` can grant without
-asking. After QR setup, go to parent mode and tap **Give access** under Status.
+The now-playing controls, sleep timer and floating home button need permissions that only
+`adb` can grant without asking. After QR setup, open parent mode → **Kiosk and PIN** and tap
+**Give access** on each warning.
 
 ### Option B: USB and adb
 
@@ -107,8 +117,9 @@ asking. After QR setup, go to parent mode and tap **Give access** under Status.
    scripts/setup-device.sh app/build/outputs/apk/release/app-release.apk
    ```
 
-   This installs the APK, runs `dpm set-device-owner`, grants notification access for the
-   now-playing bar and starts Kvakk.
+   This installs the APK, runs `dpm set-device-owner`, grants notification access (for the
+   now-playing controls and sleep timer) and the floating home button's overlay permission,
+   and starts Kvakk.
 
 ### Then, on the phone
 
@@ -136,4 +147,6 @@ Then pick another launcher in Android settings and uninstall Kvakk as usual.
   possible before the cap kicks in.
 - **Allowed apps can open their own screens**, such as in-app stores or links. Kids versions
   of apps (e.g. NRK Super, Spotify Kids) are safer.
-- **Notifications are hidden in kids mode.** Use the now-playing bar or the app itself.
+- **Notifications are hidden in kids mode.** Use the now-playing controls or the app itself.
+- **The floating home button is hidden on some system screens**, such as permission prompts.
+  Android hides other apps' overlays there for security.

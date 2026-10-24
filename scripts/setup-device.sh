@@ -41,6 +41,9 @@ done
 echo "Allowing the now-playing bar to read media sessions"
 adb shell cmd notification allow_listener "$PKG/$PKG.media.NowPlayingListener"
 
+echo "Allowing the floating home button over other apps"
+adb shell appops set "$PKG" SYSTEM_ALERT_WINDOW allow
+
 echo "Starting Kvakk"
 adb shell am start -n "$PKG/.ui.HomeActivity"
 
