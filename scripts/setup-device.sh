@@ -21,7 +21,22 @@ echo "Installing $APK"
 adb install -r "$APK"
 
 echo "Making Kvakk device owner"
-adb shell dpm set-device-owner "$PKG/.admin.AdminReceiver"
+# Right after first boot, Google Play Services can briefly hold an account and Android
+# refuses with "there are already some accounts on the device". Retry for a bit.
+for attempt in 1 2 3 4 5 6; do
+    if output="$(adb shell dpm set-device-owner "$PKG/.admin.AdminReceiver" 2>&1)" &&
+        [[ "$output" != *Exception* ]]; then
+        echo "$output"
+        break
+    fi
+    if (( attempt == 6 )); then
+        echo "$output" >&2
+        echo "Could not make Kvakk device owner. Remove all accounts and users, or factory reset." >&2
+        exit 1
+    fi
+    echo "Not allowed yet, retrying in 20 seconds..."
+    sleep 20
+done
 
 echo "Allowing the now-playing bar to read media sessions"
 adb shell cmd notification allow_listener "$PKG/$PKG.media.NowPlayingListener"

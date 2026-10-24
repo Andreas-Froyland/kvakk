@@ -22,31 +22,26 @@ data class KvakkSettings(
 class KvakkPrefs private constructor(context: Context) {
     private val prefs = context.getSharedPreferences("kvakk", Context.MODE_PRIVATE)
     private val _settings = MutableStateFlow(read())
+
+    // Every write goes through this class and publishes here. (Not an
+    // OnSharedPreferenceChangeListener: those are held weakly, and R8 drops the field that
+    // would keep one alive, so release builds silently stopped updating.)
     val settings: StateFlow<KvakkSettings> = _settings.asStateFlow()
-
-    // Kept in a field: SharedPreferences only holds listeners weakly.
-    private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-        _settings.value = read()
-    }
-
-    init {
-        prefs.registerOnSharedPreferenceChangeListener(listener)
-    }
 
     var allowedPackages: Set<String>
         get() = prefs.getStringSet(KEY_ALLOWED, emptySet())!!.toSet()
-        set(value) = prefs.edit { putStringSet(KEY_ALLOWED, value) }
+        set(value) = update { putStringSet(KEY_ALLOWED, value) }
 
     fun volumeCap(route: AudioRoute): Int = prefs.getInt(capKey(route), route.defaultCapPercent)
 
     fun setVolumeCap(route: AudioRoute, percent: Int) =
-        prefs.edit { putInt(capKey(route), percent.coerceIn(MIN_CAP_PERCENT, 100)) }
+        update { putInt(capKey(route), percent.coerceIn(MIN_CAP_PERCENT, 100)) }
 
     val hasPin: Boolean get() = prefs.contains(KEY_PIN_HASH)
 
     fun setPin(pin: String) {
         val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
-        prefs.edit {
+        update {
             putString(KEY_PIN_SALT, salt.encode())
             putString(KEY_PIN_HASH, hash(pin, salt).encode())
         }
@@ -56,6 +51,12 @@ class KvakkPrefs private constructor(context: Context) {
         val salt = prefs.getString(KEY_PIN_SALT, null)?.decode() ?: return false
         val expected = prefs.getString(KEY_PIN_HASH, null)?.decode() ?: return false
         return MessageDigest.isEqual(hash(pin, salt), expected)
+    }
+
+    /** apply() updates the in-memory values immediately, so read() sees the change. */
+    private fun update(block: SharedPreferences.Editor.() -> Unit) {
+        prefs.edit(action = block)
+        _settings.value = read()
     }
 
     private fun read() = KvakkSettings(
