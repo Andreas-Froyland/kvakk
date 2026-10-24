@@ -35,6 +35,17 @@ Requires JDK 17+ and the Android SDK (compileSdk 37).
 ./gradlew assembleDebug
 ```
 
+For an installable release APK (about 2 MB, runs on any Android 9+ phone), create a
+signing key once and build:
+
+```sh
+scripts/create-keystore.sh   # writes kvakk-release.jks + keystore.properties (gitignored)
+./gradlew assembleRelease    # app/build/outputs/apk/release/app-release.apk
+```
+
+Back up the keystore and `keystore.properties`. Updates have to be signed with the same
+key, and a device-owner app can't be reinstalled with a new key without a factory reset.
+
 ## Set up a phone
 
 1. Factory reset the phone. During setup, **skip adding a Google account**: Android only
@@ -43,7 +54,7 @@ Requires JDK 17+ and the Android SDK (compileSdk 37).
 3. Run:
 
    ```sh
-   scripts/setup-device.sh
+   scripts/setup-device.sh app/build/outputs/apk/release/app-release.apk
    ```
 
    This installs the APK, runs `dpm set-device-owner`, grants notification access for the
