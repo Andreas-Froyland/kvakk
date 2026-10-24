@@ -60,12 +60,12 @@ There are two ways to make Kvakk device owner. Both need a factory-reset phone.
    gh release create v0.1.0 kvakk.apk
    ```
 
-   The repo has to be public for the phone to download it. Any HTTPS file host works.
+   Any HTTPS file host works, as long as the phone can download without logging in.
 2. Generate the QR code (needs `pip install segno` or the `qrencode` command):
 
    ```sh
    scripts/provisioning-qr.py \
-     --url https://github.com/<you>/kvakk/releases/latest/download/kvakk.apk \
+     --url https://github.com/Andreas-Froyland/kvakk/releases/latest/download/kvakk.apk \
      --wifi-ssid MyWifi --wifi-password secret   # optional
    ```
 
