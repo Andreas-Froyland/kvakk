@@ -19,6 +19,7 @@ data class KvakkSettings(
     val hasPin: Boolean,
     val bedtime: Bedtime,
     val homeBubbleEnabled: Boolean,
+    val autoUpdate: Boolean,
 )
 
 /** Evening theme window, in minutes after midnight. May wrap past midnight (19:00–07:00). */
@@ -58,6 +59,8 @@ class KvakkPrefs private constructor(context: Context) {
 
     fun setHomeBubbleEnabled(enabled: Boolean) = update { putBoolean(KEY_HOME_BUBBLE, enabled) }
 
+    fun setAutoUpdate(enabled: Boolean) = update { putBoolean(KEY_AUTO_UPDATE, enabled) }
+
     fun setPin(pin: String) {
         val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
         update {
@@ -88,6 +91,7 @@ class KvakkPrefs private constructor(context: Context) {
             endMinute = prefs.getInt(KEY_BEDTIME_END, 7 * 60),
         ),
         homeBubbleEnabled = prefs.getBoolean(KEY_HOME_BUBBLE, true),
+        autoUpdate = prefs.getBoolean(KEY_AUTO_UPDATE, true),
     )
 
     private fun capKey(route: AudioRoute) = "volume_cap_${route.name.lowercase()}"
@@ -109,6 +113,7 @@ class KvakkPrefs private constructor(context: Context) {
         private const val KEY_BEDTIME_START = "bedtime_start"
         private const val KEY_BEDTIME_END = "bedtime_end"
         private const val KEY_HOME_BUBBLE = "home_bubble"
+        private const val KEY_AUTO_UPDATE = "auto_update"
         private const val MINUTES_PER_DAY = 24 * 60
 
         @Volatile private var instance: KvakkPrefs? = null

@@ -89,6 +89,19 @@
     <string name="release_title">Remove kiosk mode</string>
     <string name="release_body">Removes Kvakk as device owner and lifts all restrictions, so the phone works normally and Kvakk can be uninstalled.</string>
     <string name="release_confirm">Remove</string>
+    <string name="update_title">Updates</string>
+    <string name="update_version">Version %1$s</string>
+    <string name="update_check">Check for updates</string>
+    <string name="update_checking">Checking for updates…</string>
+    <string name="update_up_to_date">Kvakk is up to date.</string>
+    <string name="update_installing">Installing version %1$s. Kvakk will restart in a moment.</string>
+    <string name="update_failed_owner">Updates need Kvakk to be device owner.</string>
+    <string name="update_failed_network">Could not reach the update server. Check the Wi-Fi.</string>
+    <string name="update_failed_invalid">The downloaded file is not a Kvakk update.</string>
+    <string name="update_failed_signature">The update is not signed with Kvakk\'s key, so it was not installed.</string>
+    <string name="update_failed_install">Installing the update failed.</string>
+    <string name="update_auto">Update automatically</string>
+    <string name="update_auto_body">Checks once a day, at night while charging on Wi-Fi.</string>
     <string name="cancel">Cancel</string>
 
     <!-- Volume guard notification (hidden in kiosk mode) -->

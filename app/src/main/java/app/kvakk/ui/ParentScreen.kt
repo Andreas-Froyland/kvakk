@@ -58,6 +58,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -87,6 +89,10 @@ import app.kvakk.data.InstalledApps
 import app.kvakk.data.KvakkPrefs
 import app.kvakk.data.KvakkSettings
 import app.kvakk.overlay.HomeBubble
+import app.kvakk.update.UpdateStatus
+import app.kvakk.update.UpdateWorker
+import app.kvakk.update.Updater
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private const val PLAY_STORE = "com.android.vending"
@@ -595,6 +601,7 @@ private fun LazyListScope.kioskSection(
                     }
                 }
             }
+            UpdatesCard(settings.autoUpdate, prefs)
             ActionButton(stringResource(R.string.pin_change), onClick = onChangePin)
             ActionButton(stringResource(R.string.open_settings)) { context.open(Intent(Settings.ACTION_SETTINGS)) }
             ActionButton(stringResource(R.string.open_play_store)) { InstalledApps.launch(context, PLAY_STORE) }
@@ -621,6 +628,74 @@ private fun LazyListScope.kioskSection(
                 },
                 dismissButton = {
                     TextButton(onClick = { confirmRelease = false }) { Text(stringResource(R.string.cancel)) }
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun UpdatesCard(autoUpdate: Boolean, prefs: KvakkPrefs) {
+    val context = LocalContext.current
+    val colors = LocalKvakkColors.current
+    val scope = rememberCoroutineScope()
+    val status by Updater.status.collectAsState()
+    val checking = status == UpdateStatus.Checking
+    val message = when (val current = status) {
+        UpdateStatus.Idle -> null
+        UpdateStatus.Checking -> stringResource(R.string.update_checking)
+        UpdateStatus.UpToDate -> stringResource(R.string.update_up_to_date)
+        is UpdateStatus.Installing -> stringResource(R.string.update_installing, current.version)
+        is UpdateStatus.Failed -> stringResource(
+            when (current.reason) {
+                UpdateStatus.Reason.NOT_DEVICE_OWNER -> R.string.update_failed_owner
+                UpdateStatus.Reason.NETWORK -> R.string.update_failed_network
+                UpdateStatus.Reason.INVALID_APK -> R.string.update_failed_invalid
+                UpdateStatus.Reason.WRONG_SIGNATURE -> R.string.update_failed_signature
+                UpdateStatus.Reason.INSTALL_FAILED -> R.string.update_failed_install
+            },
+        )
+    }
+    SettingCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.update_title), style = MaterialTheme.typography.titleMedium, color = colors.text)
+                Text(stringResource(R.string.update_version, Updater.currentVersion), style = MaterialTheme.typography.bodyMedium, color = colors.textMuted)
+            }
+            ToySurface(
+                onClick = if (checking) null else { { scope.launch { Updater.checkAndInstall(context) } } },
+                color = if (checking) colors.soft else colors.accent,
+                edge = if (checking) colors.softEdge else colors.accentEdge,
+                shape = CircleShape,
+                depth = 4.dp,
+                contentPadding = PaddingValues(horizontal = 18.dp, vertical = 10.dp),
+            ) {
+                Text(
+                    stringResource(R.string.update_check),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = if (checking) colors.onSoft else colors.onAccent,
+                )
+            }
+        }
+        if (message != null) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                message,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (status is UpdateStatus.Failed) MaterialTheme.colorScheme.error else colors.text,
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.update_auto), style = MaterialTheme.typography.titleSmall, color = colors.text)
+                Text(stringResource(R.string.update_auto_body), style = MaterialTheme.typography.bodyMedium, color = colors.textMuted)
+            }
+            Switch(
+                checked = autoUpdate,
+                onCheckedChange = {
+                    prefs.setAutoUpdate(it)
+                    UpdateWorker.schedule(context, it)
                 },
             )
         }

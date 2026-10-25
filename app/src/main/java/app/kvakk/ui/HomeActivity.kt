@@ -29,6 +29,7 @@ import app.kvakk.data.ParentSession
 import app.kvakk.media.NowPlayingTracker
 import app.kvakk.media.SleepTimer
 import app.kvakk.overlay.HomeBubble
+import app.kvakk.update.UpdateWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +55,7 @@ class HomeActivity : ComponentActivity() {
         nowPlaying = NowPlayingTracker(this)
         KioskPolicy.apply(this)
         VolumeGuardService.start(this)
+        UpdateWorker.schedule(this, prefs.settings.value.autoUpdate)
 
         setContent {
             val settings by prefs.settings.collectAsState()

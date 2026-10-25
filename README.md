@@ -30,6 +30,10 @@ volume limits and simple Bluetooth headphone switching.
   Pages for apps, volume limits, bedtime, Bluetooth, and kiosk and PIN settings. Kids mode
   comes back when the screen turns off or after 15 minutes. Five wrong PINs lock the keypad
   for 30 seconds.
+- **Self-updating.** Kvakk checks the latest GitHub release once a day (at night, while
+  idle, charging and on Wi-Fi) and from a **Check for updates** button in parent mode. It
+  only installs an APK for Kvakk with a higher version, signed with the same key as the
+  installed app, and installs it silently as device owner. No Play Store needed.
 - **Hardening.** Blocks safe mode (which would bypass the launcher), factory reset from
   Settings, adding users and installing unknown apps. Disables the lock screen.
 
@@ -69,6 +73,17 @@ It needs two repository secrets, made from your local signing key:
 ```sh
 base64 -w0 kvakk-release.jks | gh secret set KEYSTORE_BASE64
 grep storePassword keystore.properties | cut -d= -f2- | gh secret set KEYSTORE_PASSWORD
+```
+
+Phones running 0.3.0 or later update themselves from `releases/latest`, so publishing a tag
+is all it takes to update every phone. To use your own releases, build with
+`-PkvakkUpdateUrl=https://…/kvakk.apk`.
+
+Older phones (0.2.0 and earlier) need one manual update over USB:
+
+```sh
+curl -LO https://github.com/Andreas-Froyland/kvakk/releases/latest/download/kvakk.apk
+adb install -r kvakk.apk
 ```
 
 ## Set up a phone

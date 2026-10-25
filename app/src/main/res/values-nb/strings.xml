@@ -83,6 +83,19 @@
     <string name="release_title">Fjern kioskmodus</string>
     <string name="release_body">Fjerner Kvakk som enhetseier og alle begrensninger, slik at telefonen fungerer som vanlig og Kvakk kan avinstalleres.</string>
     <string name="release_confirm">Fjern</string>
+    <string name="update_title">Oppdateringer</string>
+    <string name="update_version">Versjon %1$s</string>
+    <string name="update_check">Se etter oppdateringer</string>
+    <string name="update_checking">Ser etter oppdateringer…</string>
+    <string name="update_up_to_date">Kvakk er oppdatert.</string>
+    <string name="update_installing">Installerer versjon %1$s. Kvakk starter på nytt om litt.</string>
+    <string name="update_failed_owner">Oppdateringer krever at Kvakk er enhetseier.</string>
+    <string name="update_failed_network">Fikk ikke kontakt med oppdateringsserveren. Sjekk Wi-Fi.</string>
+    <string name="update_failed_invalid">Den nedlastede filen er ikke en Kvakk-oppdatering.</string>
+    <string name="update_failed_signature">Oppdateringen er ikke signert med Kvakks nøkkel, så den ble ikke installert.</string>
+    <string name="update_failed_install">Installasjonen av oppdateringen feilet.</string>
+    <string name="update_auto">Oppdater automatisk</string>
+    <string name="update_auto_body">Sjekker én gang om dagen, om natten mens telefonen lader på Wi-Fi.</string>
     <string name="cancel">Avbryt</string>
 
     <string name="volume_guard_channel">Volumgrense</string>
